@@ -122,7 +122,9 @@ public class Main {
     
     private static Program getProgram(String programName) {
         if(programName == null) { usage(); }
-        if(programName.equals("sed")) {
+        if(programName.equals("mine")) {
+            return Program.MINE;
+        } else if(programName.equals("sed")) {
             return Program.SED;
         } else if(programName.equals("grep")) {
             return Program.GREP;
@@ -199,7 +201,7 @@ public class Main {
                 int fail = 0;
                 List<Program> programs = new ArrayList<Program>();
                 if(programName == null) {
-                    programs.addAll(Arrays.asList(new Program[]{Program.SED, Program.GREP, Program.FLEX, Program.XML, Program.PYTHON, Program.PYTHON_WRAPPED}));
+                    programs.addAll(Arrays.asList(new Program[]{Program.MINE, Program.SED, Program.GREP, Program.FLEX, Program.XML, Program.PYTHON, Program.PYTHON_WRAPPED}));
                 } else {
                     programs.add(getProgram(programName));
                 }

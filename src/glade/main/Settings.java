@@ -19,6 +19,7 @@ import glade.constants.program.GrepData;
 import glade.constants.program.PythonData;
 import glade.constants.program.PythonWrappedData;
 import glade.constants.program.SedData;
+import glade.constants.program.MineData;
 import glade.constants.program.XmlData;
 import glade.grammar.fuzz.GrammarFuzzer.CombinedMutationSampler;
 import glade.grammar.fuzz.GrammarFuzzer.GrammarMutationSampler;
@@ -65,9 +66,11 @@ public class Settings {
     }
     
     public static enum Program {
-        XML, GREP, SED, FLEX, PYTHON, PYTHON_WRAPPED;
+        MINE, XML, GREP, SED, FLEX, PYTHON, PYTHON_WRAPPED;
         public ProgramSettings getSettings() {
             switch(this) {
+            case MINE:
+                return new ProgramSettings(MineData.MINE_DATA, MineData.MINE_EXAMPLES, MineData.MINE_NAME);
             case XML:
                 return new ProgramSettings(XmlData.XML_DATA, XmlData.XML_EXAMPLES, XmlData.XML_NAME);
             case PYTHON:
