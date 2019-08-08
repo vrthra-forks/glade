@@ -22,64 +22,64 @@ import java.util.Map;
 import java.util.Set;
 
 public class Utils {
-	public static <V> Map<V,Integer> getInverse(List<V> list) {
-		Map<V,Integer> inverse = new HashMap<V,Integer>();
-		for(int i=0; i<list.size(); i++) {
-			inverse.put(list.get(i), i);
-		}
-		return inverse;
-	}
-	
-	@SafeVarargs
-	public static <T> List<T> getList(T ... ts) {
-		List<T> tlist = new ArrayList<T>();
-		for(T t : ts) {
-			tlist.add(t);
-		}
-		return tlist;
-	}
-	
-	public static class MultivalueMap<K,V> extends HashMap<K,Set<V>> {
-		private static final long serialVersionUID = -6390444829513305915L;
+    public static <V> Map<V,Integer> getInverse(List<V> list) {
+        Map<V,Integer> inverse = new HashMap<V,Integer>();
+        for(int i=0; i<list.size(); i++) {
+            inverse.put(list.get(i), i);
+        }
+        return inverse;
+    }
+    
+    @SafeVarargs
+    public static <T> List<T> getList(T ... ts) {
+        List<T> tlist = new ArrayList<T>();
+        for(T t : ts) {
+            tlist.add(t);
+        }
+        return tlist;
+    }
+    
+    public static class MultivalueMap<K,V> extends HashMap<K,Set<V>> {
+        private static final long serialVersionUID = -6390444829513305915L;
 
-		public void add(K k, V v) {
-			ensure(k).add(v);
-		}
-		
-		public Set<V> ensure(K k) {
-			Set<V> vSet = super.get(k);
-			if(vSet == null) {
-				super.put(k, vSet = new HashSet<V>());
-			}
-			return vSet;
-		}
+        public void add(K k, V v) {
+            ensure(k).add(v);
+        }
+        
+        public Set<V> ensure(K k) {
+            Set<V> vSet = super.get(k);
+            if(vSet == null) {
+                super.put(k, vSet = new HashSet<V>());
+            }
+            return vSet;
+        }
 
-		@Override
-		public Set<V> get(Object k) {
-			Set<V> vSet = super.get(k);
-			return vSet == null ? new HashSet<V>() : vSet;
-		}
-	}
-	
-	public static class Maybe<T> {
-		private T t;
-		public Maybe(T t) {
-			this.t = t;
-		}
-		public Maybe() {
-			this.t = null;
-		}
-		public T getT() {
-			if(this.t != null) {
-				return t;
-			}
-			throw new RuntimeException("Invalid access!");
-		}
-		public boolean hasT() {
-			return this.t != null;
-		}
-		public T getTOr(T t) {
-			return this.hasT() ? this.getT() : t;
-		}
-	}
+        @Override
+        public Set<V> get(Object k) {
+            Set<V> vSet = super.get(k);
+            return vSet == null ? new HashSet<V>() : vSet;
+        }
+    }
+    
+    public static class Maybe<T> {
+        private T t;
+        public Maybe(T t) {
+            this.t = t;
+        }
+        public Maybe() {
+            this.t = null;
+        }
+        public T getT() {
+            if(this.t != null) {
+                return t;
+            }
+            throw new RuntimeException("Invalid access!");
+        }
+        public boolean hasT() {
+            return this.t != null;
+        }
+        public T getTOr(T t) {
+            return this.hasT() ? this.getT() : t;
+        }
+    }
 }

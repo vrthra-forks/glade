@@ -15,40 +15,40 @@
 package glade.util;
 
 public class OracleUtils {
-	public interface Oracle {
-		public String execute(String query);
-	}
-	
-	public interface DiscriminativeOracle {
-		public abstract boolean query(String query);
-	}
-	
-	public static interface Wrapper {
-		public abstract String wrap(String input);
-	}
-	
-	public static class IdentityWrapper implements Wrapper {
-		@Override
-		public String wrap(String input) {
-			return input;
-		}
-	}
-	
-	public static class WrappedOracle implements Oracle {
-		private final Oracle oracle;
-		private final Wrapper wrapper;
-		
-		public WrappedOracle(Oracle oracle, Wrapper wrapper) {
-			this.oracle = oracle;
-			this.wrapper = wrapper;
-		}
-		
-		@Override
-		public String execute(String query) {
-			return this.oracle.execute(this.wrapper.wrap(query));
-		}
-	}
-	
+    public interface Oracle {
+        public String execute(String query);
+    }
+    
+    public interface DiscriminativeOracle {
+        public abstract boolean query(String query);
+    }
+    
+    public static interface Wrapper {
+        public abstract String wrap(String input);
+    }
+    
+    public static class IdentityWrapper implements Wrapper {
+        @Override
+        public String wrap(String input) {
+            return input;
+        }
+    }
+    
+    public static class WrappedOracle implements Oracle {
+        private final Oracle oracle;
+        private final Wrapper wrapper;
+        
+        public WrappedOracle(Oracle oracle, Wrapper wrapper) {
+            this.oracle = oracle;
+            this.wrapper = wrapper;
+        }
+        
+        @Override
+        public String execute(String query) {
+            return this.oracle.execute(this.wrapper.wrap(query));
+        }
+    }
+    
     public static class WrappedDiscriminativeOracle implements DiscriminativeOracle {
         private final DiscriminativeOracle oracle;
         private final Wrapper wrapper;

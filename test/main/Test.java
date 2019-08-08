@@ -27,92 +27,92 @@ import java.util.Random;
 import java.util.Stack;
 
 public class Test {
-	// encodes language of matching parentheses over \Sigma = { '(', ')', '[', ']', '{', '}' }
-	public static class TestOracle implements DiscriminativeOracle {
-		// returns true if query is a string of matching parentheses
-		public boolean query(String query) {
-			Stack<Character> stack = new Stack<Character>();
-			for(int i=0; i<query.length(); i++) {
-				char c = query.charAt(i);
-				if(c == '(' || c == '[' || c == '{') {
-					// handle open parentheses
-					stack.push(c);
-				} else if(c == ')' || c == ']' || c == '}') {
-					// handle closed parentheses
-					if(stack.isEmpty()) {
-						return false; 
-					}
-					char d = stack.pop();
-					if((d == '(' && c != ')') || (d == '[' && c != ']') || (d == '{' && c != '}')) {
-						return false;
-					}
-				} else {
-					return false;
-				}
-			}
-			return stack.isEmpty();
-		}
-	}
+    // encodes language of matching parentheses over \Sigma = { '(', ')', '[', ']', '{', '}' }
+    public static class TestOracle implements DiscriminativeOracle {
+        // returns true if query is a string of matching parentheses
+        public boolean query(String query) {
+            Stack<Character> stack = new Stack<Character>();
+            for(int i=0; i<query.length(); i++) {
+                char c = query.charAt(i);
+                if(c == '(' || c == '[' || c == '{') {
+                    // handle open parentheses
+                    stack.push(c);
+                } else if(c == ')' || c == ']' || c == '}') {
+                    // handle closed parentheses
+                    if(stack.isEmpty()) {
+                        return false; 
+                    }
+                    char d = stack.pop();
+                    if((d == '(' && c != ')') || (d == '[' && c != ']') || (d == '{' && c != '}')) {
+                        return false;
+                    }
+                } else {
+                    return false;
+                }
+            }
+            return stack.isEmpty();
+        }
+    }
 
-	public static List<String> getTrainExamples() {
-		return Arrays.asList(new String[]{"{([][])([][])}{[()()][()()]}"});
-	}
+    public static List<String> getTrainExamples() {
+        return Arrays.asList(new String[]{"{([][])([][])}{[()()][()()]}"});
+    }
 
-	public static SampleParameters getSampleParameters() {
-		return new SampleParameters(new double[]{0.2, 0.2, 0.2, 0.4}, // (multinomial) distribution of repetitions
-				0.8,                                          // probability of using recursive production
-				0.1,                                          // probability of a uniformly random character (vs. a special character)
-				100);                                         // max number of steps before timing out
-	}
+    public static SampleParameters getSampleParameters() {
+        return new SampleParameters(new double[]{0.2, 0.2, 0.2, 0.4}, // (multinomial) distribution of repetitions
+                0.8,                                          // probability of using recursive production
+                0.1,                                          // probability of a uniformly random character (vs. a special character)
+                100);                                         // max number of steps before timing out
+    }
 
 
-	public static void main(String[] args) {
-		// number of samples to print
-		int numSamples = 10;
+    public static void main(String[] args) {
+        // number of samples to print
+        int numSamples = 10;
 
-		// log settings
-		String logName = "log.txt";
-		boolean verbose = true;
+        // log settings
+        String logName = "log.txt";
+        boolean verbose = true;
 
-		// seed for random number generator
-		int seed = 0;
+        // seed for random number generator
+        int seed = 0;
 
-		// fuzzer settings
-		int maxLen = 1000;                                     // max length of a sample
-		int numMut = 20;                                       // number of mutations to seed input
-		SampleParameters sampleParams = getSampleParameters(); // sampling parameters
+        // fuzzer settings
+        int maxLen = 1000;                                     // max length of a sample
+        int numMut = 20;                                       // number of mutations to seed input
+        SampleParameters sampleParams = getSampleParameters(); // sampling parameters
 
-		// enable logging
-		Log.init(logName, verbose);
+        // enable logging
+        Log.init(logName, verbose);
 
-		// input: query oracle
-		DiscriminativeOracle oracle = new TestOracle();
+        // input: query oracle
+        DiscriminativeOracle oracle = new TestOracle();
 
-		// input: (positive) training examples
-		List<String> examples = getTrainExamples();
+        // input: (positive) training examples
+        List<String> examples = getTrainExamples();
 
-		// learn grammar
-		Grammar grammar = GrammarSynthesis.getGrammarMultiple(examples, oracle);
+        // learn grammar
+        Grammar grammar = GrammarSynthesis.getGrammarMultiple(examples, oracle);
 
-		// fuzz using grammar
-		Iterable<String> samples = new GrammarMutationSampler(grammar, sampleParams, maxLen, numMut, new Random(seed));
+        // fuzz using grammar
+        Iterable<String> samples = new GrammarMutationSampler(grammar, sampleParams, maxLen, numMut, new Random(seed));
 
-		int pass = 0;
-		int count = 0;
-		for(String sample : samples) {
-			Log.info("SAMPLE: " + sample);
-			if(oracle.query(sample)) {
-				Log.info("PASS");
-				pass++;
-			} else {
-				Log.info("FAIL");
-			}
-			Log.info("");
-			count++;
-			if(count >= numSamples) {
-				break;
-			}
-		}
-		Log.info("PASS RATE: " + (float)pass/numSamples);
-	}
+        int pass = 0;
+        int count = 0;
+        for(String sample : samples) {
+            Log.info("SAMPLE: " + sample);
+            if(oracle.query(sample)) {
+                Log.info("PASS");
+                pass++;
+            } else {
+                Log.info("FAIL");
+            }
+            Log.info("");
+            count++;
+            if(count >= numSamples) {
+                break;
+            }
+        }
+        Log.info("PASS RATE: " + (float)pass/numSamples);
+    }
 }
